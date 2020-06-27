@@ -1,0 +1,54 @@
+﻿<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="nav-close">
+        <i class="fa fa-times-circle"></i>
+    </div>
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <h1 style="font-size: 2em; color: white; text-align: center">Food Ordering</h1>
+                </div>
+                <div class="logo-element">
+                    Food
+                </div>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-tv"></i>
+                    <span class="nav-label">菜单管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>                                    
+                        <a class="J_menuItem" href="/Food/FoodList" data-index="1">
+                            菜品列表
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="#">
+                    <i class="fa fa-tv"></i>
+                    <span class="nav-label">订单管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a class="J_menuItem" href="/Order/OrderList" data-index="2">
+                            订单列表
+                        </a>
+                    </li>
+                    <li>
+                        <a class="J_menuItem" href="/Order/OrderDetail" data-index="3">
+                            订单详情
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="sidebar-footer">
+        <a id="btnChangeMenu"><span class="fa fa-reorder"></span></a>
+    </div>
+</nav>

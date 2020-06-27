@@ -1,0 +1,26 @@
+E:\VS Working\.net core\FoodOrderingSystem\FoodOrderingSystem.Dao\bin\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.deps.json
+E:\VS Working\.net core\FoodOrderingSystem\FoodOrderingSystem.Dao\bin\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.dll
+E:\VS Working\.net core\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.csprojAssemblyReference.cache
+E:\VS Working\.net core\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.AssemblyInfoInputs.cache
+E:\VS Working\.net core\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.AssemblyInfo.cs
+E:\VS Working\.net core\FoodOrderingSystem\FoodOrderingSystem.Dao\bin\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.pdb
+E:\VS Working\.net core\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.dll
+E:\VS Working\.net core\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.pdb
+C:\Users\20795\Desktop\FoodOrderingSystem\FoodOrderingSystem.Dao\bin\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.deps.json
+C:\Users\20795\Desktop\FoodOrderingSystem\FoodOrderingSystem.Dao\bin\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.dll
+C:\Users\20795\Desktop\FoodOrderingSystem\FoodOrderingSystem.Dao\bin\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.pdb
+C:\Users\20795\Desktop\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.csprojAssemblyReference.cache
+C:\Users\20795\Desktop\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.AssemblyInfoInputs.cache
+C:\Users\20795\Desktop\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.AssemblyInfo.cs
+C:\Users\20795\Desktop\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.csproj.CoreCompileInputs.cache
+C:\Users\20795\Desktop\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.dll
+C:\Users\20795\Desktop\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.pdb
+D:\软件开发实训\FoodOrderingSystem\FoodOrderingSystem.Dao\bin\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.deps.json
+D:\软件开发实训\FoodOrderingSystem\FoodOrderingSystem.Dao\bin\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.dll
+D:\软件开发实训\FoodOrderingSystem\FoodOrderingSystem.Dao\bin\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.pdb
+D:\软件开发实训\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.csprojAssemblyReference.cache
+D:\软件开发实训\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.AssemblyInfoInputs.cache
+D:\软件开发实训\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.AssemblyInfo.cs
+D:\软件开发实训\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.csproj.CoreCompileInputs.cache
+D:\软件开发实训\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.dll
+D:\软件开发实训\FoodOrderingSystem\FoodOrderingSystem.Dao\obj\Debug\netcoreapp3.1\FoodOrderingSystem.Dao.pdb

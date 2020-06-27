@@ -1,0 +1,265 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Goods</title>
+
+    <link rel='stylesheet' id='font-awesome-fa-css' href='~/css/font-awesome.css' type='text/css' media='all' />
+    <link href="~/css/bootstrap.css" rel="stylesheet">
+    <link href="~/css/vue-component.min.css" rel="stylesheet" />
+    <script src="~/js/base.js"></script>
+    <script src="~/js/vue.js"></script>
+    <script src="~/js/jquery.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/vue-component.min.js"></script>
+    <style>
+        .lm-video-grid {
+            border: 1px solid #dadada;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            overflow: hidden;
+            visibility: hidden;
+        }
+
+            .lm-video-grid .lm-video-banner .video-image {
+                background-color: rgba(105, 117, 127, 0.2);
+            }
+
+            .lm-video-grid .video-description {
+                padding: 10px;
+            }
+
+            .esf-window .esf-window-container .esf-window-header {
+                background-color: #101010;
+            }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Food Ordering</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">首页</a></li>
+                    <li><a href="#">新品</a></li>
+                    <li><a href="#">促销</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    @if (!string.IsNullOrEmpty(User.Identity.Name))
+                    {
+                        <li><a href="#">@User.Identity.Name</a></li>
+                        <li><a href="/Home/Logout">退出</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="/Home/Login">登陆</a></li>
+                        <li><a href="/Home/Register">注册</a></li>
+                    }
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+
+    <div class="container" id="app">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for..." v-model="keyword">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" @@click="getData()">搜索</button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="input-group">
+
+                    <!--  点击显示订单结算页面 ******-->
+                    <button class="btn btn-default" type="button" @@click="showCard()">我的订单</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-6 col-sm-3" v-for="item in list">
+                <div class="lm-video-grid" style=" visibility: visible;">
+                    <div class="lm-video-banner video-banner1 videoPopup">
+                        <div class="video-image">
+                            <img :src="item.imgUrl" width="262" height="200" />
+                        </div>
+                    </div>
+                    <div class="video-description">
+                        <h3>{{item.name}}</h3>
+                        <p>{{item.description}}</p>
+                        <p>￥{{item.price}}元</p>
+                        <p><button class="btn btn-danger" @@click="addCard(item)">+订餐</button></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <window-modal ref="catWin" :width="'600'">
+            <template slot="header">
+                我的点餐
+            </template>
+            <template slot="body">
+                <div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>菜名</th>
+                                <th>数量</th>
+                                <th>价格</th>
+                                <th></th>
+                            </tr>
+
+                            <tr v-for="(v, i) in cats">
+                                <td>{{v.name}}</td>
+                                <td>1</td>
+                                <td>￥{{v.price}}元</td>
+                                <td><button class="btn btn-danger" @@click="removeFood(i)">删除</button></td>
+                            </tr>
+
+                            <tr>
+                                <td>总价</td>
+                                <td></td>
+                                <td></td>
+                                <td>￥{{totalPrice}}元</td>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </template>
+            <template slot="footer">
+                <button class="btn btn-danger" @@click="submitCard()">提交</button>
+                <button class="btn btn-default" @@click="closeWin()">取消</button>
+            </template>
+        </window-modal>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                username: '@User.Identity.Name',
+                list: [],
+
+                pageSize: 50,
+                page: 1,
+                total: 0,
+
+                type: "",
+                keyword: "",
+                cats: [],
+                cardVisible: false,
+
+                options: ['荤菜', '素菜', '水果', '饮料', '酒类', '西餐', '韩式料理', '日式料理']
+            },
+            mounted() {
+                this.getData();
+            },
+            computed: {
+                totalPrice() {
+                    return (this.cats || []).
+                        reduce((a, x) => a +  (x.price || 0), 0);
+                }
+            },
+            methods: {
+                getData() {
+                    _fetch(`/Food/GetFoods?pageIndex=${this.page}&pageSize=${this.pageSize}&type=${this.type}&keyword=${this.keyword}`, 'Get')
+                        .then(res => {
+                            if (res.status == "Success") {
+                                this.list = res.data;
+                            }
+                            else {
+                                alert("系统出错了！");
+                            }
+                    });
+                },
+
+                logout() {
+                    location.href="/Home/Logout"
+                },
+
+                login() {
+                    location.href="/Home/Login"
+                },
+
+                reset() {
+                    location.href = '/Home/ChangePassword';
+                },
+
+                addCard(item) {
+                    this.cats.push($.extend(true, {}, item));
+                    alert("加入成功，请点击右上我的订单查看详情！");
+                },
+
+                closeWin() {             
+                    this.$refs.catWin.close();
+                },
+                //弹出来的小卡片
+                showCard() {
+                    this.$refs.catWin.show();
+                },
+
+                removeFood(index) {
+                    this.carts.splice(index, 1);
+                },
+
+                format(row, column) {
+                    var val = row.price.toFixed(2);
+
+                    return `￥${val}元`;
+                },
+
+                //点击提交订单
+                submitCard() {
+                    if (!this.username) {
+                        alert("请先登录！");
+                        location.href = "/Home/Login";
+                    }
+                    if (this.cats.length == 0) {
+                        alert("请先点单！");
+                    }
+
+                    var foodIds = "";
+                    this.cats.filter(x => foodIds = x.id + ",");
+                    var params = `totalPrice=${this.totalPrice}&foodIds=${foodIds}`;
+
+                    _fetch("/Order/AddOrder?" + params, "POST").then(res => {
+                        if (res.status = "Success") {
+                            alert("下单成功！");
+                            this.$refs.catWin.close();
+                            this.cats = [];
+                        }
+                        else {
+                            alert("系统出错了！");
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+
+</body>
+    </html>

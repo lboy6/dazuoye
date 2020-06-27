@@ -1,0 +1,298 @@
+﻿
+@{
+    ViewData["Title"] = "Food List";
+    Layout = "~/Views/Shared/_Layout_Content.cshtml";
+}
+
+<style>
+    .esf-window .esf-window-container .esf-window-header {
+        background: #2A3F54;
+    }
+</style>
+
+<div class="wrapper wrapper-content" id="app">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>菜品列表</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="form-group">
+                <button type="button" class="btn btn-primary " @@click="addFood()"><i class="fa fa-plus"></i>&nbsp;添加</button>
+                <button type="button" class="btn btn-info" @@click="editOrder()">
+                    <i class="fa fa-pencil"></i> 编辑
+                </button>
+                <button type="button" class="btn btn-danger" @@click="deleteOrder()">
+                    <i class="fa fa-remove"></i>&nbsp;&nbsp;<span class="bold">删除</span>
+                </button>
+            </div>
+
+            <div class="jqGrid_wrapper">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>菜名</th>
+                            <th>简介</th>
+                            <th>价格</th>
+                            <th>库存</th>
+                            <th>类别</th>
+                            <th>图片</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in tableData">
+                            <td><input type="checkbox" v-model="item.checked" /></td>
+                            <td>{{item.name}}</td>
+                            <td>{{item.description}}</td>
+                            <td>{{item.price}}元</td>
+                            <td>{{item.stockCount}}</td>
+                            <td>{{item.type}}</td>
+                            <td>
+                                <img width="100" height="100" :src="item.imgUrl" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <pagination v-model="pagerOpt.page" :total="pagerOpt.total" :page-size="pagerOpt.pageSize" @@input="pageChange()"></pagination>
+            </div>
+
+            <window-modal ref="addWin" :width="'600'">
+                <template slot="header">
+                    {{editType}}菜品
+                </template>
+                <template slot="body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">菜名:</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control input-sm" v-model="model.Name" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">简介:</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control input-sm" v-model="model.Description" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">价格:</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control input-sm" v-model="model.Price" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">库存:</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control input-sm" v-model="model.StockCount" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">类别:</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control input-sm" v-model="model.Type" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">图片:</label>
+                            <div class="col-sm-5">
+                                <img width="100" height="100" :src="model.ImgUrl" />
+                            </div>
+                            <div class="col-sm-4">
+                                    <label class="control-label" style="cursor: pointer "
+                                           for="documentUpload">上传</label>
+                                    <div class="hidden">
+                                        <file-upload ref="documentUpload"
+                                                     name="documentUpload"
+                                                     :is-multiple="false"
+                                                     :save-url="saveUrl"
+                                                     :auto-save="true"
+                                                     @@complete="afterUploaded"></file-upload>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template slot="footer">
+                    <button class="btn btn-success" @@click="submitFood()">提交</button>
+                    <button class="btn btn-default" @@click="closeWin()">取消</button>
+                </template>
+            </window-modal>
+        </div>
+    </div>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            saveUrl: "/Food/UploadImg",
+            tableData: [],
+
+            pagerOpt: {
+                pageSize: 10,
+                page: 1,
+                total: 0,
+            },
+
+            model: {
+                Id: 0,
+                Name: "",
+                Description: "",
+                Price: 0,
+                StockCount: 0,
+                Type: "",
+                ImgUrl: ""
+            },
+
+            editType: "添加",
+            backup: ""
+        },
+        mounted() {
+            this.getData();
+        },
+        methods: {
+            getData() {
+                var params = `pageNo=${this.pagerOpt.page}&pageSize=${this.pagerOpt.pageSize}`
+                _fetch("/Food/GetFoods?" + params, "GET").then(res => {
+                    if (res.status = "Success") {
+
+                        res.data.filter(x => {
+                            x.checked = false;
+                            x.isEdit = false;
+                        });
+                        this.tableData = res.data;
+                        this.pagerOpt.total = res.total;
+                    }
+                    else {
+                        alert("系统出错了！");
+                    }
+                });
+            },
+
+            addFood() {
+                this.editType = "添加";
+                this.$refs.addWin.show();
+            },
+
+            closeWin() {
+                this.model = {
+                    Id: 0,
+                    Name: "",
+                    Description: "",
+                    Price: "",
+                    StockCount: "",
+                    Type: "",
+                    ImgUrl: ""
+                };
+
+                this.$refs.addWin.close();
+            },
+
+           //添加商品信息
+            submitFood() {
+                if (!this.model.Name || !this.model.Description || !this.model.Price
+                    || !this.model.StockCount || !this.model.Type || !this.model.ImgUrl) {
+                    alert("请完成下面所有信息！")
+                    return;
+                }
+
+                var model = $.extend(true, {}, this.model);
+                var data = {
+                    Id: model.Id,
+                    Name: model.Name,
+                    Description: model.Description,
+                    ImgUrl: model.ImgUrl,
+                    Type: model.Type,
+                    Price: parseFloat(model.Price),
+                    StockCount: parseFloat(model.StockCount),
+                }
+
+                _fetch("/Food/AddFood", "POST", data).then(res => {
+                    if (res.status = "Success") {
+                        alert("提交成功了！");
+                        this.closeWin();
+                        this.getData();
+                    }
+                    else {
+                        alert("系统出错了！");
+                    }
+                });
+            },
+
+            afterUploaded(res) {
+                if (res.success == true) {
+                    this.model.ImgUrl = res.fileName;
+                }
+                else {
+                    alert("系统出错，请重试！");
+                }
+            },
+
+            editOrder() {
+                var ids = [];
+                this.tableData.filter(v => {
+                    if (v.checked) {
+                        ids.push(v.id);
+                    }
+                });
+
+                if (ids.length == 0 || ids.length > 1) {
+                    alert('请先选择一份菜品');
+                    return;
+                }
+
+                var item = this.tableData.find(x => x.id == ids[0]);
+                this.editType = "编辑";
+
+                this.model = {
+                    Id: item.id,
+                    Name: item.name,
+                    Description: item.description,
+                    ImgUrl: item.imgUrl,
+                    Type: item.type,
+                    Price: parseFloat(item.price),
+                    StockCount: parseFloat(item.stockCount),
+                };
+                this.$refs.addWin.show();
+            },
+
+            saveOrder(item) {
+                var parms = `id=${item.id}&status=${item.status}`
+                _fetch("/Order/Save?" + parms, "Post").then(res => {
+                    if (res.status = "Success") {
+                        this.getData();
+                    }
+                    else {
+                        alert("系统出错了！");
+                    }
+                });
+            },
+
+            deleteOrder() {
+                var ids = [];
+                this.tableData.forEach(function (v) {
+                    if (v.checked) {
+                        ids.push(v.id);
+                    }
+                });
+                if (ids.length == 0) {
+                    alert('请先选择一份菜品');
+                    return;
+                }
+
+                alert("删除成功！");
+            },
+
+            pageChange() {
+                this.getData();
+            }
+        }
+    });
+</script>
+

@@ -1,0 +1,151 @@
+﻿
+@{
+    ViewData["Title"] = "Order List";
+    Layout = "~/Views/Shared/_Layout_Content.cshtml";
+}
+
+
+<div class="wrapper wrapper-content" id="app">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>订单列表</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="form-group">
+                <button type="button" class="btn btn-info" @@click="editOrder()">
+                    <i class="fa fa-pencil"></i> &nbsp;编辑</button>
+            </div>
+
+            <div class="jqGrid_wrapper">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>订单号</th>
+                            <th>用户名</th>
+                            <th>送餐地址</th>
+                            <th>预定时间</th>
+                            <th>金额</th>
+                            <th>订单状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in tableData">
+                            <td><input type="checkbox" v-model="item.checked" /></td>
+                            <td>{{item.id}}</td>
+                            <td>{{item.userName}}</td>
+                            <td>{{item.address}}</td>
+                            <td>{{item.createTime}}</td>
+                            <td>{{item.price}}元</td>
+                            <td>
+                                <template v-if="!item.isEdit">
+                                    {{item.status}}
+                                </template>
+                                <template v-else>
+                                    <select class="form-control" v-model="item.status">
+                                        <option value="已付款">已付款</option>
+                                        <option value="已发货">已发货</option>
+                                        <option value="已完成">已完成</option>
+                                    </select>
+
+                                    <button type="button" class="btn btn-info " @@click="saveOrder(item)">
+                                        <i class="fa fa-pencil"></i> &nbsp;保存
+                                    </button>
+                                    <button type="button" class="btn btn-danger " @@click="cancelOrder(item)">
+                                        <i class="fa fa-remove"></i>&nbsp;&nbsp;<span class="bold">取消</span>
+                                    </button>
+                                </template>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <pagination v-model="pagerOpt.page" :total="pagerOpt.total" :page-size="pagerOpt.pageSize" @@input="pageChange()"></pagination>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            tableData: [],
+
+            pagerOpt: {
+                pageSize: 10,
+                page: 1,
+                total: 0,
+            },
+
+            backup: ""
+        },
+        mounted() {
+            this.getData();
+        },
+        methods: {
+            getData() {
+                var params = `pageNo=${this.pagerOpt.page}&pageSize=${this.pagerOpt.pageSize}`
+                _fetch("/Order/GetOrders?" + params, "GET").then(res => {
+                    if (res.status = "Success") {
+                        
+                        res.data.filter(x => {
+                            x.checked = false;
+                            x.isEdit = false;
+                        });
+                        this.tableData = res.data;
+                        this.pagerOpt.total = res.total;
+                    }
+                    else {
+                        alert("系统出错了！");
+                    }
+                });
+            },
+
+            editOrder() {
+                var ids = [];
+                this.tableData.filter(v => {
+                    if (v.checked) {
+                        ids.push(v.id);
+                    }
+                });
+
+                if (ids.length == 0 || ids.length > 1) {
+                    alert('请先选择一份订单');
+                    return;
+                }
+
+                var item = this.tableData.find(x => x.id == ids[0]);
+                item.isEdit = true;
+                this.backup = item.status;
+            },
+
+            cancelOrder(item) {
+                item.isEdit = false;
+                item.status = this.backup;
+            },
+
+            //修改并保存订单的最新状态
+            saveOrder(item) {
+                var parms = `id=${item.id}&status=${item.status}`
+                _fetch("/Order/Save?" + parms, "Post").then(res => {
+                    if (res.status = "Success") {
+                        this.getData();
+                    }
+                    else {
+                        alert("系统出错了！");
+                    }
+                });
+            },
+            pageChange() {
+                this.getData();
+            }
+        }
+    });
+</script>
+
